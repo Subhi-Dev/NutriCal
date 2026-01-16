@@ -1,14 +1,19 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "es2016",
     "module": "Preserve",
     "composite": true,
     "declaration": true,
     "paths": {
-      "@/db/*": ["./db/*"],
-      "@/routes/*": ["./routes/*"],
-      "@/utils/*": ["./utils/*"],
+      "@/db/*": [
+        "./db/*"
+      ],
+      "@/routes/*": [
+        "./routes/*"
+      ],
+      "@/utils/*": [
+        "./utils/*"
+      ]
     },
     "outDir": "./dist",
     "baseUrl": ".",
@@ -16,11 +21,25 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "checkJs": true,
-		"moduleDetection": "force",
-		"resolveJsonModule": true,
-		"allowJs": true,
-		"esModuleInterop": true,
-		"isolatedModules": true,
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "references": []
+  "references": [],
+  "exclude": [
+    "node_modules"
+  ]
 }
