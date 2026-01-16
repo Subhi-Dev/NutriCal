@@ -11,7 +11,7 @@ export default function FeaturedProgram(props: {
       <Text className="font-display-medium text-3xl text-white w-64 mb-2">
         {props.name}
       </Text>
-      <Text className="font-display text-xl text-white mb-4">
+      <Text className="font-display text-xl text-white mb-4 w-48">
         {props.description}
       </Text>
       <Link

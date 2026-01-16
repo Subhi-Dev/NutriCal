@@ -34,7 +34,7 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "usesAppleSignIn": true,
-      "bundleIdentifier": "com.nutrihealth.nutrical",
+      "bundleIdentifier": "dev.polyace.nutrical",
       "privacyManifests": {
         "NSPrivacyCollectedDataTypes": [
           {
@@ -98,7 +98,7 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "com.nutrihealth.nutrical"
+      "package": "dev.polyace.nutrical"
     },
     "extra": {
       "eas": {
@@ -161,7 +161,6 @@
           "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
-
       [
         "expo-build-properties",
         {

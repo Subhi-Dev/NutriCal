@@ -45,3 +45,6 @@ src/db/secrets.ts
 
 expo-env.d.ts
 # @end expo-cli
+*.ipa
+*.apk
+*.aab
