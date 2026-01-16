@@ -1,5 +1,4 @@
 import Slider from '@react-native-community/slider'
-import * as Sentry from '@sentry/react-native'
 import { reloadAppAsync } from 'expo'
 import { Image, ImageBackground } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -25,10 +24,13 @@ import useClient from '~/components/network/client'
 import { useStorageState } from '~/hooks/useStorageState'
 import { setLocale } from '~/paraglide/runtime'
 
-Sentry.init({
-  enabled: false
+import * as Clarity from '@microsoft/react-native-clarity'
+
+Clarity.initialize('v1z5ntrx3p', {
+  logLevel: Clarity.LogLevel.None // Note: Use "LogLevel.Verbose" value while testing to debug initialization issues.
 })
-function RootLayout() {
+
+export default function RootLayout() {
   setLocale('en')
   const [[, token], setToken] = useStorageState('token')
 
@@ -75,7 +77,6 @@ function RootLayout() {
     </SessionProvider>
   )
 }
-export default Sentry.wrap(RootLayout)
 const toastConfig: ToastConfig = {
   success: (props) => (
     <SuccessToast

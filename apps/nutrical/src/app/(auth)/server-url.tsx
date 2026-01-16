@@ -18,8 +18,10 @@ import { useStorageState } from '~/hooks/useStorageState'
 import { m } from '~/paraglide/messages'
 
 export default function ServerUrlPage() {
-  const [currentUrl, setUrl] = useStorageState('serverUrl')
-  const [newUrl, setNewUrl] = useState<string>(currentUrl?.toString() ?? '')
+  const [[, currentUrl], setUrl] = useStorageState('serverUrl')
+  const [newUrl, setNewUrl] = useState<string>(
+    currentUrl || process.env.EXPO_PUBLIC_API_BASE || ''
+  )
   const [saveDisabled, setSaveDisabled] = useState(false)
 
   const handleSave = async () => {

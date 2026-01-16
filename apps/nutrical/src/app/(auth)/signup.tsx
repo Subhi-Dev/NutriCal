@@ -2,7 +2,6 @@ import DateTimePicker, {
   DateTimePickerAndroid,
   DateTimePickerEvent
 } from '@react-native-community/datetimepicker'
-import { captureException } from '@sentry/react-native'
 import { reloadAppAsync } from 'expo'
 import { router } from 'expo-router'
 import { ChevronLeft } from 'lucide-react-native'
@@ -88,7 +87,7 @@ export default function Signup() {
         Toast.show({ type: 'error', text1: 'Signup failed' })
       }
     } catch (err) {
-      captureException(err)
+      //captureException(err)
       Toast.show({ type: 'error', text1: 'Unknown Error' })
     } finally {
       setSignupDisable(false)

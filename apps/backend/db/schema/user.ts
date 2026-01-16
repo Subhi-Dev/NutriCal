@@ -1,4 +1,4 @@
-import { is, relations, sql } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import {
   AnyPgColumn,
   boolean,
@@ -16,7 +16,6 @@ import {
 import { programs, userTags } from './programs'
 
 import type { InferSelectModel } from 'drizzle-orm'
-import { en } from 'zod/v4/locales'
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
  * database instance for multiple projects.
@@ -31,7 +30,7 @@ const defaultForiegnKeyAction: {
   onUpdate: 'set null',
   onDelete: 'set null'
 }
-export const createTable = pgTableCreator((name) => `nutrical_${name}`)
+export const createTable = pgTableCreator((name) => `nc_${name}`)
 
 export function enumToPgEnum<T extends Record<string, string | number>>(
   myEnum: T

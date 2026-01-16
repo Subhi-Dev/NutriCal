@@ -136,12 +136,12 @@
         "expo-font",
         {
           "fonts": [
-            "../../node_modules/@expo-google-fonts/rubik/Rubik_300Light.ttf",
-            "../../node_modules/@expo-google-fonts/rubik/Rubik_400Regular.ttf",
-            "../../node_modules/@expo-google-fonts/rubik/Rubik_500Medium.ttf",
-            "../../node_modules/@expo-google-fonts/rubik/Rubik_600SemiBold.ttf",
-            "../../node_modules/@expo-google-fonts/rubik/Rubik_700Bold.ttf",
-            "../../node_modules/@expo-google-fonts/rubik/Rubik_800ExtraBold.ttf"
+            "./node_modules/@expo-google-fonts/rubik/Rubik_300Light.ttf",
+            "./node_modules/@expo-google-fonts/rubik/Rubik_400Regular.ttf",
+            "./node_modules/@expo-google-fonts/rubik/Rubik_500Medium.ttf",
+            "./node_modules/@expo-google-fonts/rubik/Rubik_600SemiBold.ttf",
+            "./node_modules/@expo-google-fonts/rubik/Rubik_700Bold.ttf",
+            "./node_modules/@expo-google-fonts/rubik/Rubik_800ExtraBold.ttf"
           ]
         }
       ],
@@ -161,14 +161,7 @@
           "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
-      [
-        "@sentry/react-native",
-        {
-          "organization": "sentry",
-          "project": "sentry",
-          "url": "https://sentry.io"
-        }
-      ],
+
       [
         "expo-build-properties",
         {
@@ -178,7 +171,8 @@
         }
       ],
       "expo-sqlite",
-      "expo-notifications"
+      "expo-notifications",
+      "@react-native-community/datetimepicker"
     ],
     "scheme": "nutrical",
     "updates": {

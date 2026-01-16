@@ -50,14 +50,6 @@ export const get = async (req: Request, res: Response) => {
         }
       }
     })
-
-    if (!posts || posts.length === 0) {
-      return res.status(404).json({
-        error: true,
-        message: 'No posts found'
-      })
-    }
-
     return res.json({
       error: false,
       data: posts

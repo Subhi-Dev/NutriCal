@@ -35,12 +35,7 @@ export const get = async (req: Request, res: Response) => {
         }
       }
     })
-    if (programTemplates.length === 0) {
-      return res.status(404).json({
-        error: true,
-        message: 'No programs found'
-      })
-    }
+
     return res.json({
       error: false,
       data: programTemplates

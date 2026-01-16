@@ -1,5 +1,4 @@
 import { GetAccountReturn, GetPostById } from '@backend/types'
-import { captureException } from '@sentry/react-native'
 import { FlashList } from '@shopify/flash-list'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useState } from 'react'
@@ -84,7 +83,7 @@ export default function PostPage() {
     } catch (e) {
       setSending(false)
       console.log('Unknown Error (sendText)' + e)
-      captureException(e)
+      //captureException(e)
     }
   }
 

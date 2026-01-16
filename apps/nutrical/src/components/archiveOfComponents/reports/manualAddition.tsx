@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { captureException } from '@sentry/react-native'
 import dayjs from 'dayjs'
 import { getNetworkStateAsync } from 'expo-network'
 import { router } from 'expo-router'
@@ -23,8 +22,6 @@ export default function ManualAddition() {
       await AsyncStorage.setItem(key, value)
     } catch (e) {
       console.log('Error caching scale data: ' + e)
-      captureException(e)
-
       // saving error
     }
   }

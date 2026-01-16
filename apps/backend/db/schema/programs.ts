@@ -21,7 +21,7 @@ import type { InferSelectModel } from 'drizzle-orm'
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `nutrical_${name}`)
+export const createTable = pgTableCreator((name) => `nc_${name}`)
 
 export function enumToPgEnum<T extends Record<string, string | number>>(
   myEnum: T

@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/react-native'
 import { reloadAppAsync } from 'expo'
 import { Image } from 'expo-image'
 import { router } from 'expo-router'
@@ -16,7 +15,6 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import useSWR from 'swr'
 
 import useClient from '~/components/network/client'
 import { useStorageState } from '~/hooks/useStorageState'
@@ -30,33 +28,23 @@ export default function Login() {
   const [loginDisable, setLoginDisable] = useState(false)
 
   const [, setToken] = useStorageState('token')
-  const [, setUrl] = useStorageState('serverUrl')
-  const client = useClient()
-
-  const { mutate } = useSWR(
-    'auth/login',
-    async (url) => {
-      return await client
-        .post<
-          | { error: false; data: { token: string; session: Session } }
-          | { error: true; message: string }
-        >(url, {
-          json: { email, password }
-        })
-        .json()
-    },
-    { revalidateOnFocus: false, shouldRetryOnError: false }
-  )
-
+  const api = useClient()
   const handleSignIn = async () => {
     try {
       setLoginDisable(true)
-      const result = await mutate()
-      if (result?.error) {
+      const result = await api
+        .post<
+          | { error: false; data: { token: string; session: Session } }
+          | { error: true; message: string }
+        >('auth/login', {
+          json: { email, password }
+        })
+        .json()
+      if (result.error) {
         setLoginDisable(false)
         return Toast.show({ type: 'error', text1: result.message })
       }
-      if (result?.data.token) {
+      if (result.data.token) {
         setToken(result.data.token)
         reloadAppAsync()
       } else {
@@ -65,7 +53,6 @@ export default function Login() {
       }
     } catch (err) {
       setLoginDisable(false)
-      captureException(err)
       Toast.show({ type: 'error', text1: m.login_unknown_error() })
     }
   }

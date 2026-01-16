@@ -1,5 +1,4 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import { captureException } from '@sentry/react-native'
 import dayjs from 'dayjs'
 import { router } from 'expo-router'
 import * as SecureStore from 'expo-secure-store'

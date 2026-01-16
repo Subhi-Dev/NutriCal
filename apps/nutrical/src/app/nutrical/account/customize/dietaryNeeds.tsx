@@ -2,17 +2,10 @@ import Slider from '@react-native-community/slider'
 import { differenceInYears } from 'date-fns'
 import { router, Stack } from 'expo-router'
 import { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-  SafeAreaView,
-  TextInput
-} from 'react-native'
+import { View, Text, Pressable, ScrollView, TextInput } from 'react-native'
 import Toast from 'react-native-toast-message'
 import useSWR from 'swr'
-
+import { SafeAreaView } from 'react-native-safe-area-context'
 import type {
   GetDietarySettingsReturn,
   PatchDietarySettingsReturn,

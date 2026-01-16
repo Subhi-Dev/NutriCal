@@ -1,0 +1,8 @@
+packages:
+  - apps/**
+
+onlyBuiltDependencies:
+  - '@sentry/cli'
+  - esbuild
+  - sharp
+  - sqlite3

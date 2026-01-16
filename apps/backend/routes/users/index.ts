@@ -39,11 +39,8 @@ export const patch = async (req: Request, res: Response) => {
     }
 
     const requestToken = req.token
-    if (!requestToken) {
-      return res.status(401).json({ error: true, message: 'Unauthorized' })
-    }
     const session = await validateSessionToken(requestToken)
-    if (!session.session) {
+    if (!session) {
       return res.status(401).json({ error: true, message: 'Unauthorized' })
     }
     partialData.updatedAt = new Date()

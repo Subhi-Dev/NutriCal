@@ -23,7 +23,8 @@
     "noUnusedParameters": true,
     "noImplicitAny": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true
   },
   "extends": "expo/tsconfig.base",
   "include": [

@@ -19,7 +19,9 @@ export const post = async (req: Request, res: Response) => {
           'dinner',
           'snack',
           'functional_food'
-        ])
+        ]),
+        amount: z.number().min(0),
+        unitId: z.number().int().min(0).nullable()
       })
       .strict()
     const requestBody: z.infer<typeof trackRecipeSchema> =
@@ -45,7 +47,9 @@ export const post = async (req: Request, res: Response) => {
         dayIndex: requestBody.dayIndex,
         mealName: Meal[requestBody.mealName.toUpperCase() as keyof typeof Meal],
         programId: requestBody.programId,
-        foodId: requestBody.foodId
+        foodId: requestBody.foodId,
+        amount: requestBody.amount.toString(),
+        unitId: requestBody.unitId
       })
       .returning()
 
@@ -60,6 +64,8 @@ export const post = async (req: Request, res: Response) => {
       data: recipes
     })
   } catch (e) {
+    console.log(JSON.stringify(e))
+
     return res.status(500).json({
       error: true,
       message: e

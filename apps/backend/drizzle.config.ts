@@ -8,7 +8,7 @@ export default {
     ssl: true
   },
   out: './drizzle',
-  tablesFilter: ['nutrical_*'],
+  tablesFilter: ['nc_*'],
   verbose: true,
   strict: true
 } satisfies Config

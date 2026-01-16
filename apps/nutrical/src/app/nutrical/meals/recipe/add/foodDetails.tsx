@@ -15,7 +15,10 @@ import Toast from 'react-native-toast-message'
 import useSWR from 'swr'
 import * as DropdownMenu from 'zeego/dropdown-menu'
 
-import type { GetFoodById as OriginalGetFoodById } from '@backend/types'
+import type {
+  GetFoodById as OriginalGetFoodById,
+  PostTrackFood
+} from '@backend/types'
 
 // Extend GetFoodById to include baseAmountGrams if it's missing in the backend type
 type GetFoodById = OriginalGetFoodById & {
@@ -23,6 +26,7 @@ type GetFoodById = OriginalGetFoodById & {
 }
 
 import ProgressBar from '~/components/ui/ProgressBar'
+import useClient from '~/components/network/client'
 
 function Border() {
   return <View className={'my-1 h-0.5 bg-gray-100 rounded-full'}></View>
@@ -94,7 +98,8 @@ export default function FoodDetails() {
   }>()
 
   const [food, setFood] = useState<GetFoodById | null>(null)
-
+  const { mutate } = useSWR('programs')
+  const api = useClient()
   const [amount, setAmount] = useState('1')
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null)
   const [selectedMeal, setSelectedMeal] = useState(initialMeal || 'breakfast')
@@ -153,17 +158,16 @@ export default function FoodDetails() {
       'sodium',
       'potassium'
     ] as (keyof GetFoodById)[]
-    
+
     for (const key of nutritionKeys) {
       const baseValue = food[key]
-      if (!baseValue){
+      if (!baseValue) {
         newNutrition[key] = null
       } else {
         newNutrition[key] = Number(baseValue) * multiplier
       }
-    
     }
-    
+
     // Merge calculated nutrition with the original food object
     setCalculatedNutrition({ ...food, ...newNutrition })
   }, [amount, selectedUnit, food])
@@ -503,6 +507,19 @@ export default function FoodDetails() {
           className="bg-emerald-500 py-3 rounded-lg flex-row justify-center items-center"
           onPress={() => {
             // Handle Add to meal logic here
+            api.post<
+              | { error: true; message: string }
+              | { error: false; data: PostTrackFood }
+            >('foods/track', {
+              json: {
+                dayIndex: Number(selectedDay),
+                mealName: selectedMeal.toLocaleLowerCase(),
+                programId: Number(programId),
+                foodId: food.id,
+                amount: Number(amount),
+                unitId: selectedUnit?.id
+              }
+            })
             console.log({
               foodId: food.id,
               amount: Number(amount),
@@ -511,6 +528,7 @@ export default function FoodDetails() {
               programId,
               selectedDay
             })
+            mutate()
             router.back()
           }}
         >

@@ -41,24 +41,44 @@ export default function MealSection(props: {
         element.dayIndex === props.selectedDay
       ) {
         tempMeal.meals.push(element)
-        element.food?.recipeFoodComponents.forEach((ingredient) => {
+        console.log(tempMeal.meals)
+        if (element.food?.type === 'component') {
           tempMeal.sums.cal +=
-            (parseInt(ingredient.component?.calories || '0.01') *
-              parseFloat(ingredient.weightInGrams || '0.01')) /
+            (parseInt(element.food.calories || '0.01') *
+              parseFloat(element.amount || '0.01')) /
             100
           tempMeal.sums.carb +=
-            (parseInt(ingredient.component?.carbohydrates || '0.01') *
-              parseFloat(ingredient.weightInGrams || '0.01')) /
+            (parseInt(element.food.carbohydrates || '0.01') *
+              parseFloat(element.amount || '0.01')) /
             100
           tempMeal.sums.protein +=
-            (parseInt(ingredient.component?.proteins || '0.01') *
-              parseFloat(ingredient.weightInGrams || '0.01')) /
+            (parseInt(element.food.proteins || '0.01') *
+              parseFloat(element.amount || '0.01')) /
             100
           tempMeal.sums.fat +=
-            (parseInt(ingredient.component?.fats || '0.01') *
-              parseFloat(ingredient.weightInGrams || '0.01')) /
+            (parseInt(element.food.fats || '0.01') *
+              parseFloat(element.amount || '0.01')) /
             100
-        })
+        } else {
+          element.food?.recipeFoodComponents.forEach((ingredient) => {
+            tempMeal.sums.cal +=
+              (parseInt(ingredient.component?.calories || '0.01') *
+                parseFloat(ingredient.weightInGrams || '0.01')) /
+              100
+            tempMeal.sums.carb +=
+              (parseInt(ingredient.component?.carbohydrates || '0.01') *
+                parseFloat(ingredient.weightInGrams || '0.01')) /
+              100
+            tempMeal.sums.protein +=
+              (parseInt(ingredient.component?.proteins || '0.01') *
+                parseFloat(ingredient.weightInGrams || '0.01')) /
+              100
+            tempMeal.sums.fat +=
+              (parseInt(ingredient.component?.fats || '0.01') *
+                parseFloat(ingredient.weightInGrams || '0.01')) /
+              100
+          })
+        }
       }
     })
     return tempMeal
@@ -101,7 +121,14 @@ export default function MealSection(props: {
           </View>
           <Link
             asChild
-            href={{pathname: '/nutrical/meals/recipe/add', params: {meal: props.title, selectedDay: props.selectedDay, programId: props.program.id}}}
+            href={{
+              pathname: '/nutrical/meals/recipe/add',
+              params: {
+                meal: props.title,
+                selectedDay: props.selectedDay,
+                programId: props.program.id
+              }
+            }}
           >
             <Pressable className={' rounded-full bg-teal-300 p-1 mr-2'}>
               <Plus />
