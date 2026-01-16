@@ -238,11 +238,32 @@ export default function InitialUserSetup() {
                 {dob ? dob.toLocaleDateString() : m.setup_dob_placeholder()}
               </Text>
             </Pressable>
-            {showDatePicker && (
+            {showDatePicker && Platform.OS === 'ios' && (
+              <View className="mt-2 bg-gray-100 rounded-lg overflow-hidden">
+                <DateTimePicker
+                  value={dob || new Date(2000, 0, 1)}
+                  mode="date"
+                  display="spinner"
+                  maximumDate={new Date()}
+                  onChange={(_, selectedDate) => {
+                    if (selectedDate) setDob(selectedDate)
+                  }}
+                />
+                <Pressable
+                  onPress={() => setShowDatePicker(false)}
+                  className="bg-white p-2 border-t border-gray-200"
+                >
+                  <Text className="text-center font-display-medium text-blue-500">
+                    Done
+                  </Text>
+                </Pressable>
+              </View>
+            )}
+            {showDatePicker && Platform.OS === 'android' && (
               <DateTimePicker
                 value={dob || new Date(2000, 0, 1)}
                 mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                display="default"
                 maximumDate={new Date()}
                 onChange={(_, selectedDate) => {
                   setShowDatePicker(false)
@@ -354,7 +375,7 @@ export default function InitialUserSetup() {
               onPress={handleNext}
               disabled={loading}
               className={
-                'w-full items-center justify-center rounded-lg h-12 bg-green-600 disabled:bg-green-400 flex-row'
+                'w-full items-center justify-center rounded-lg h-12 bg-green-600 disabled:bg-green-400 flex-row shadow-sm'
               }
             >
               {loading && (

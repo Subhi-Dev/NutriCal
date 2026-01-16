@@ -11,6 +11,7 @@ module.exports = {
       fontFamily: {
         display: ['Rubik-Regular'],
         'display-medium': ['Rubik-Medium'],
+        'display-semibold': ['Rubik-SemiBold'],
         'display-bold': ['Rubik-Bold']
       }
     }
