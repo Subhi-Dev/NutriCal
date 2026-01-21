@@ -11,16 +11,68 @@ export const get = async (req: Request, res: Response) => {
   try {
     const requestToken = req.token
     const session = await validateSessionToken(requestToken)
-    if (!session.session) {
+    if (!session) {
       return res.status(401).json({ error: true, message: 'Unauthorized' })
     }
 
-    const dietarySettingsData = await db.query.dietarySettings.findFirst({
-      where: eq(dietarySettings.userId, session.user.id),
+    let dietarySettingsData = await db.query.dietarySettings.findFirst({
+      where: eq(dietarySettings.userId, session.user!.id)
     })
 
     if (!dietarySettingsData) {
-      return res.status(404).json({ error: true, message: 'User not found' })
+      if (
+        !session.user!.weight ||
+        !session.user!.height ||
+        !session.user!.dateOfBirth
+      ) {
+        const dietarySettingsData = await db
+          .insert(dietarySettings)
+          .values({
+            userId: session.user!.id,
+            waterGoal: 2000,
+            calorieGoal:
+              session.user!.sex === 'M' ? String(2000) : String(1600),
+            fatGoal:
+              session.user!.sex === 'M'
+                ? String(2000 * 0.2)
+                : String(1600 * 0.2),
+            proteinGoal:
+              session.user!.sex === 'M'
+                ? String(2000 * 0.2)
+                : String(1600 * 0.2),
+            carbsGoal:
+              session.user!.sex === 'M'
+                ? String(2000 * 0.6)
+                : String(1600 * 0.6)
+          })
+          .returning()
+        return res.json({ error: false, data: dietarySettingsData[0] })
+      }
+      const age =
+        new Date().getFullYear() -
+        new Date(session.user!.dateOfBirth).getFullYear()
+      const bmr =
+        session.user!.sex === 'M'
+          ? 10 * parseFloat(session.user!.weight) +
+            6.25 * session.user!.height -
+            5 * age +
+            5
+          : 10 * parseFloat(session.user!.weight) +
+            6.25 * session.user!.height -
+            5 * age -
+            161
+      const dietarySettingsData = await db
+        .insert(dietarySettings)
+        .values({
+          userId: session.user!.id,
+          waterGoal: 2000,
+          calorieGoal: String(bmr),
+          fatGoal: String(bmr * 0.2),
+          proteinGoal: String(bmr * 0.2),
+          carbsGoal: String(bmr * 0.6)
+        })
+        .returning()
+      return res.json({ error: false, data: dietarySettingsData[0] })
     }
 
     return res.json({ error: false, data: dietarySettingsData })
@@ -36,11 +88,10 @@ export const patch = async (req: Request, res: Response) => {
     const updateDietarySettingsSchema = z
       .object({
         waterGoal: z.number().optional(),
-        calorieGoal: z.number().optional(),
-        proteinGoal: z.number().optional(),
-        fatGoal: z.number().optional(),
-        carbsGoal: z.number().optional(),
-        updatedAt: z.coerce.date().optional()
+        calorieGoal: z.number().transform(String).optional(),
+        proteinGoal: z.number().transform(String).optional(),
+        fatGoal: z.number().transform(String).optional(),
+        carbsGoal: z.number().transform(String).optional()
       })
       .strict()
     type UpdateUserData = z.infer<typeof updateDietarySettingsSchema>
@@ -57,11 +108,9 @@ export const patch = async (req: Request, res: Response) => {
       return res.status(401).json({ error: true, message: 'Unauthorized' })
     }
 
-    partialData.userId = session.user.id
-    partialData.updatedAt = new Date()
     const updatedDietarySettings = await db
       .insert(dietarySettings)
-      .values(partialData)
+      .values({ ...partialData, userId: session.user.id })
       .onConflictDoUpdate({
         target: dietarySettings.userId,
         set: partialData
