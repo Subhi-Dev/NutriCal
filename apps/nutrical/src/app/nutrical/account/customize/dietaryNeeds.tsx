@@ -45,7 +45,11 @@ export default function FoodPreferences() {
       setValue: setFats
     }
   ]
-  const { data: dietarySetting, isLoading } = useSWR<
+  const {
+    data: dietarySetting,
+    isLoading,
+    mutate
+  } = useSWR<
     | { error: true; message: string }
     | { error: false; data: GetDietarySettingsReturn }
   >(`users/dietarySettings`)
@@ -202,6 +206,7 @@ export default function FoodPreferences() {
         }
       })
       .json()
+    mutate()
     if (res.error) {
       Toast.show({
         type: 'error',
