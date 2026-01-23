@@ -3,9 +3,10 @@ import { differenceInYears } from 'date-fns'
 import { router, Stack } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { View, Text, Pressable, ScrollView, TextInput } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 import useSWR from 'swr'
-import { SafeAreaView } from 'react-native-safe-area-context'
+
 import type {
   GetDietarySettingsReturn,
   PatchDietarySettingsReturn,
@@ -53,6 +54,10 @@ export default function FoodPreferences() {
     | { error: true; message: string }
     | { error: false; data: GetDietarySettingsReturn }
   >(`users/dietarySettings`)
+  const { data: account } = useSWR<
+    { error: true; message: string } | { error: false; data: GetAccountReturn }
+  >(`account`)
+
   useEffect(() => {
     if (dietarySetting?.error) {
       Toast.show({
@@ -222,23 +227,15 @@ export default function FoodPreferences() {
     })
   }
   async function resetDefaults() {
-    //Resets the values to the default values
-    //TODO: SWR mutate instead
-    const res = await client
-      .get<
-        | { error: true; message: string }
-        | { error: false; data: GetAccountReturn }
-      >('account')
-      .json()
-    if (res.error) {
+    if (!account || account.error || !account.data?.user) {
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: res.message
+        text2: account?.error ? account.message : 'Failed to load account data'
       })
       return
     }
-    const userData = res.data
+    const userData = account.data
     // Mifflin-St Jeor equation
     let bmr =
       10 * Number(userData.user?.weight) +
@@ -275,6 +272,20 @@ export default function FoodPreferences() {
     setCarbs((tdee * 0.5).toString())
     setProteins((tdee * 0.3).toString())
     setFats((tdee * 0.2).toString())
+    mutate(
+      {
+        error: false,
+        data: {
+          userId: userData.user!.id,
+          waterGoal: dietarySettings?.waterGoal ?? 2000,
+          calorieGoal: tdee.toString(),
+          carbsGoal: (tdee * 0.5).toString(),
+          proteinGoal: (tdee * 0.3).toString(),
+          fatGoal: (tdee * 0.2).toString()
+        }
+      },
+      false
+    )
   }
   if (isLoading) {
     return <Text>Loading...</Text>
@@ -283,7 +294,7 @@ export default function FoodPreferences() {
     <SafeAreaView className="flex flex-col">
       <Stack.Screen
         options={{
-          headerRight(props) {
+          headerRight() {
             return (
               <Pressable
                 className={'self-start p-2'}
