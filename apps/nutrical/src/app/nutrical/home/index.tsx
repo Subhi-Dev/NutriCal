@@ -80,11 +80,9 @@ export default function Home() {
           renderItem={({ item, index }) => (
             <Post
               post={item}
-              favoriteUsers={item.likes}
               favoriteFunction={() => {
                 //favoritePost(item['ID'], index)
               }}
-              selfAccountID={userData.data?.session?.userId || ''}
               alone={false}
             />
           )}
