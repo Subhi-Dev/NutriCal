@@ -280,7 +280,7 @@ export default function FoodPreferences() {
     return <Text>Loading...</Text>
   }
   return (
-    <SafeAreaView className="flex flex-col">
+    <SafeAreaView className="flex-1 bg-white" edges={['bottom', 'left', 'right']}>
       <Stack.Screen
         options={{
           headerRight(props) {
@@ -297,126 +297,132 @@ export default function FoodPreferences() {
           }
         }}
       />
-      <ScrollView
-        className="flex flex-col flex-shrink basis-11/12 py-4"
-        keyboardDismissMode="on-drag"
-      >
-        <View
-          className={
-            'mx-4 flex flex-col rounded-lg overflow-hidden gap-1 items-center justify-start h-48 relative'
-          }
+      <View className="flex-1">
+        <ScrollView
+          className="flex-1 py-4"
+          contentContainerStyle={{ paddingBottom: 20 }}
+          keyboardDismissMode="on-drag"
         >
-          <ProgressCircle //Fats
-            radius={70}
-            strokeWidth={20}
-            progress={Number(calories) / Number(calories)}
-            color={data[2]?.color || '#FF6347'}
-            maxValue={Number(calories)}
-            zIndex={10}
-          />
-          <ProgressCircle //Proteins
-            radius={70}
-            strokeWidth={20}
-            progress={
-              (Number(data[0]?.value) + Number(data[1]?.value)) /
-              Number(calories)
+          <View
+            className={
+              'mx-4 flex flex-col rounded-lg overflow-hidden gap-1 items-center justify-start h-48 relative'
             }
-            color={data[1]?.color || '#FF4500'}
-            maxValue={Number(calories)}
-            zIndex={20}
-          />
-          <ProgressCircle //Carbs
-            radius={70}
-            strokeWidth={20}
-            progress={Number(data[0]?.value) / Number(calories)}
-            color={data[0]?.color || '#FFD700'}
-            maxValue={Number(calories)}
-            zIndex={30}
-          />
-        </View>
-        <View
-          className={
-            'mx-4 bg-white flex flex-col rounded-lg overflow-hidden gap-1'
-          }
-        >
-          <View className="flex flex-row justify-between items-center px-6 py-4 rounded-lg">
-            <Text className={'font-display-medium text-lg'}>Calories</Text>
-            <View className="flex flex-row items-center gap-2">
-              <TextInput
-                className="font-display-medium text-lg border-b-2 border-gray-300 pb-2 w-20 text-center rounded border-solid"
-                keyboardType="numeric"
-                value={displayCalories}
-                onChangeText={(text) => calorieChangeValue(text)}
-              />
-              <Text className={'font-display text-lg text-gray-500'}>kcal</Text>
-            </View>
+          >
+            <ProgressCircle //Fats
+              radius={70}
+              strokeWidth={20}
+              progress={Number(calories) / Number(calories)}
+              color={data[2]?.color || '#FF6347'}
+              maxValue={Number(calories)}
+              zIndex={10}
+            />
+            <ProgressCircle //Proteins
+              radius={70}
+              strokeWidth={20}
+              progress={
+                (Number(data[0]?.value) + Number(data[1]?.value)) /
+                Number(calories)
+              }
+              color={data[1]?.color || '#FF4500'}
+              maxValue={Number(calories)}
+              zIndex={20}
+            />
+            <ProgressCircle //Carbs
+              radius={70}
+              strokeWidth={20}
+              progress={Number(data[0]?.value) / Number(calories)}
+              color={data[0]?.color || '#FFD700'}
+              maxValue={Number(calories)}
+              zIndex={30}
+            />
           </View>
-          {data.map((item) => (
-            <View key={item.label}>
-              <Border />
-              <View className="flex flex-col">
-                <View className="flex flex-row justify-between items-center px-6 py-4 rounded-lg">
-                  <Text className={'font-display-medium text-lg'}>
-                    {item.label}
-                  </Text>
-                  <View className="flex flex-row items-center gap-2">
-                    <Text className={'font-display text-lg text-gray-500'}>
-                      {(Number(item.value) / item.factor).toFixed(0)} g
-                    </Text>
-                    <Text className={'font-display text-lg text-gray-500'}>
-                      {((Number(item.value) / Number(calories)) * 100).toFixed(
-                        0
-                      )}
-                      %
-                    </Text>
-                    <Text className={'font-display text-lg text-gray-500'}>
-                      {Number(item.value).toFixed(0)} kcal
-                    </Text>
-                  </View>
-                </View>
-                <Slider
-                  minimumTrackTintColor={item.color}
-                  className="mx-8 mb-2"
-                  onValueChange={(value) => {
-                    sliderChangeValue(
-                      value,
-                      item.label as 'Carbs' | 'Proteins' | 'Fats'
-                    )
-                  }}
-                  value={Number(
-                    ((Number(item.value) / Number(calories)) * 100).toFixed(0)
-                  )}
-                  step={5}
-                  maximumValue={100}
+          <View
+            className={
+              'mx-4 bg-white flex flex-col rounded-lg overflow-hidden gap-1'
+            }
+          >
+            <View className="flex flex-row justify-between items-center px-6 py-4 rounded-lg">
+              <Text className={'font-display-medium text-lg'}>Calories</Text>
+              <View className="flex flex-row items-center gap-2">
+                <TextInput
+                  className="font-display-medium text-lg border-b-2 border-gray-300 pb-2 w-20 text-center rounded border-solid"
+                  keyboardType="numeric"
+                  value={displayCalories}
+                  onChangeText={(text) => calorieChangeValue(text)}
                 />
+                <Text className={'font-display text-lg text-gray-500'}>
+                  kcal
+                </Text>
               </View>
             </View>
-          ))}
+            {data.map((item) => (
+              <View key={item.label}>
+                <Border />
+                <View className="flex flex-col">
+                  <View className="flex flex-row justify-between items-center px-6 py-4 rounded-lg">
+                    <Text className={'font-display-medium text-lg'}>
+                      {item.label}
+                    </Text>
+                    <View className="flex flex-row items-center gap-2">
+                      <Text className={'font-display text-lg text-gray-500'}>
+                        {(Number(item.value) / item.factor).toFixed(0)} g
+                      </Text>
+                      <Text className={'font-display text-lg text-gray-500'}>
+                        {(
+                          (Number(item.value) / Number(calories)) *
+                          100
+                        ).toFixed(0)}
+                        %
+                      </Text>
+                      <Text className={'font-display text-lg text-gray-500'}>
+                        {Number(item.value).toFixed(0)} kcal
+                      </Text>
+                    </View>
+                  </View>
+                  <Slider
+                    minimumTrackTintColor={item.color}
+                    className="mx-8 mb-2"
+                    onValueChange={(value) => {
+                      sliderChangeValue(
+                        value,
+                        item.label as 'Carbs' | 'Proteins' | 'Fats'
+                      )
+                    }}
+                    value={Number(
+                      ((Number(item.value) / Number(calories)) * 100).toFixed(0)
+                    )}
+                    step={5}
+                    maximumValue={100}
+                  />
+                </View>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+        <View className="flex-row p-4 gap-4 bg-white border-t border-gray-100">
+          <Pressable
+            className={
+              'bg-red-600 rounded-lg p-3 flex-1 flex-row items-center justify-center'
+            }
+            onPress={() => resetDefaults()}
+          >
+            <Text className={'font-display-medium text-lg text-white'}>
+              Reset to Defaults
+            </Text>
+          </Pressable>
+          <Pressable
+            className={
+              'bg-green-600 rounded-lg p-3 flex-1 flex-row items-center justify-center'
+            }
+            onPress={() => {
+              savePreferences()
+            }}
+          >
+            <Text className={'font-display-medium text-lg text-white'}>
+              Save Preferences
+            </Text>
+          </Pressable>
         </View>
-      </ScrollView>
-      <View className="flex-grow basis-1/12 flex flex-row w-screen">
-        <Pressable
-          className={
-            'bg-primary rounded-lg p-2 my-2 mx-4 flex flex-row items-center justify-center bg-red-600 basis-1/2 flex-shrink'
-          }
-          onPress={() => resetDefaults()}
-        >
-          <Text className={'font-display-medium text-lg text-white'}>
-            Reset to Defaults
-          </Text>
-        </Pressable>
-        <Pressable
-          className={
-            'bg-primary rounded-lg p-2 my-2 mx-4 flex flex-row items-center justify-center bg-green-600 basis-1/2 flex-shrink'
-          }
-          onPress={() => {
-            savePreferences()
-          }}
-        >
-          <Text className={'font-display-medium text-lg text-white'}>
-            Save Preferences
-          </Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   )
