@@ -12,14 +12,17 @@
         "buildType": "apk"
       },
       "env": {
+        "EXPO_PUBLIC_API_BASE": "http://eg4sw0skg088okowssgsk88s.65.109.239.46.sslip.io/"
       }
     },
     "preview": {
       "autoIncrement": true,
+      "distribution": "internal",
       "android": {
         "buildType": "apk"
       },
       "env": {
+        "EXPO_PUBLIC_API_BASE": "https://api.nutrical.mudafati.com/"
       }
     },
     "production": {
@@ -28,7 +31,7 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE": "https://nutrical-b1pa.onrender.com/"
+        "EXPO_PUBLIC_API_BASE": "http://api.nutrical.mudafati.com/"
       }
     }
   }

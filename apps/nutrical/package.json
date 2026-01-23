@@ -10,7 +10,8 @@
     "ios": "expo start --ios",
     "lint": "eslint .",
     "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide",
-    "machine-translate": "inlang machine translate --project project.inlang"
+    "machine-translate": "inlang machine translate --project project.inlang",
+    "postinstall": "patch-package && paraglide-js compile --project ./project.inlang --outdir ./src/paraglide"
   },
   "dependencies": {
     "@expo-google-fonts/rubik": "^0.2.3",
@@ -19,7 +20,7 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/datetimepicker": "8.4.4",
     "@react-native-community/slider": "5.0.1",
-    "@react-native-menu/menu": "^1.2.4",
+    "@react-native-menu/menu": "^2.0.0",
     "@rive-app/react-native": "^0.1.5",
     "@shopify/flash-list": "2.0.2",
     "babel-plugin-inline-import": "^3.0.0",
@@ -60,7 +61,6 @@
     "react": "19.1.0",
     "react-native": "0.81.5",
     "react-native-ble-plx": "^3.5.0",
-    "react-native-calendars": "^1.1306.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-css-interop": "^0.2.1",
     "react-native-gesture-handler": "~2.28.0",

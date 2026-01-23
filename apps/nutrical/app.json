@@ -119,11 +119,7 @@
         }
       ],
       [
-        "expo-router",
-        {
-          "origin": "https://example.com/",
-          "sitemap": false
-        }
+        "expo-router"
       ],
       [
         "expo-image-picker",
@@ -171,7 +167,15 @@
       ],
       "expo-sqlite",
       "expo-notifications",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff",
+          "image": "./assets/splash.png",
+          "imageWidth": 200
+        }
+      ]
     ],
     "scheme": "nutrical",
     "updates": {
