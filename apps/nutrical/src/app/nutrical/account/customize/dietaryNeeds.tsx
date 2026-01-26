@@ -280,7 +280,10 @@ export default function FoodPreferences() {
     return <Text>Loading...</Text>
   }
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['bottom', 'left', 'right']}>
+    <SafeAreaView
+      className="flex-1 bg-white"
+      edges={['left', 'right']}
+    >
       <Stack.Screen
         options={{
           headerRight(props) {
