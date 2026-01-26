@@ -9,13 +9,11 @@ import type { GetAccountReturn, GetPosts } from '@backend/types'
 
 import FlashListHeader from '~/components/home/FlashListHeader'
 import Post from '~/components/home/Post'
-import useClient from '~/components/network/client'
 
 export default function Home() {
   const [page, setPage] = useState(1)
   const [isEnd, setIsEnd] = useState(false)
   const [posts, setPosts] = useState<GetPosts>([])
-  const api = useClient()
   const {
     data: postsData,
     isLoading: postsLoading,
@@ -36,10 +34,6 @@ export default function Home() {
   >('account')
   // Handle data and pagination
   useEffect(() => {
-    if (postsData?.error) {
-      Toast.show({ type: 'error', text1: 'Error', text2: postsData.message })
-      return
-    }
     if (postsData && !postsData.error) {
       if (page === 1) {
         setPosts(postsData.data)
@@ -49,14 +43,20 @@ export default function Home() {
       setIsEnd(postsData.data.length < 20)
     }
   }, [postsData, page])
-  if (userError) {
-    Toast.show({ type: 'error', text1: 'Error', text2: userError.message })
-    return
-  }
+  useEffect(() => {
+    if (postsData?.error) {
+      Toast.show({ type: 'error', text1: 'Error', text2: postsData.message })
+    }
+    if (userError) {
+      Toast.show({ type: 'error', text1: 'Error', text2: userError.message })
+    }
+  }, [postsData, userError])
   if (!userData || userData.error === true) {
     return (
       <View className={'flex-1 items-center justify-center'}>
-        <Text className={'text-red-500'}>{userData?.message}</Text>
+        <Text className={'text-red-500'}>
+          {userData?.message || userError?.message}
+        </Text>
       </View>
     )
   }
