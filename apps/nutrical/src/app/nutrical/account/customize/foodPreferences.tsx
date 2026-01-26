@@ -46,6 +46,11 @@ export default function FoodPreferences() {
     }
   }
 
+  function resetDefaults() {
+    setFoodPreferences('None')
+    setAllergies([])
+  }
+
   const tagMapping = useMemo(
     () => [
       { id: 1000, name: 'Vegetarian' },
@@ -134,18 +139,24 @@ export default function FoodPreferences() {
     }
   }
   return (
-    <SafeAreaView className="flex flex-col">
-      <ScrollView className="flex flex-col flex-shrink py-4 h-full">
-        <Text
-          className={'font-display-medium text-xl text-gray-600 px-4 mt-4 mb-1'}
+    <SafeAreaView className="flex-1 bg-white" edges={['bottom', 'left', 'right']}>
+      <View className="flex-1">
+        <ScrollView
+          className="flex-1 py-4"
+          contentContainerStyle={{ paddingBottom: 20 }}
         >
-          Food Preferences
-        </Text>
-        <View
-          className={
-            'mx-4 bg-white flex flex-col rounded-lg overflow-hidden gap-1'
-          }
-        >
+          <Text
+            className={
+              'font-display-medium text-xl text-gray-600 px-4 mt-4 mb-1'
+            }
+          >
+            Food Preferences
+          </Text>
+          <View
+            className={
+              'mx-4 bg-white flex flex-col rounded-lg overflow-hidden gap-1'
+            }
+          >
           {(['None', 'Vegetarian', 'Vegan', 'Pescetarian'] as const).map(
             (preference) => (
               <Pressable
@@ -217,21 +228,32 @@ export default function FoodPreferences() {
               {allergy !== 'Allergic to Nuts' && <Border />}
             </View>
           ))}
+          </View>
+        </ScrollView>
+        <View className="flex-row p-4 gap-4 bg-white border-t border-gray-100">
+          <Pressable
+            className={
+              'bg-red-600 rounded-lg p-3 flex-1 flex-row items-center justify-center'
+            }
+            onPress={() => resetDefaults()}
+          >
+            <Text className={'font-display-medium text-lg text-white'}>
+              Reset to Defaults
+            </Text>
+          </Pressable>
+          <Pressable
+            className={
+              'bg-green-600 rounded-lg p-3 flex-1 flex-row items-center justify-center'
+            }
+            onPress={() => {
+              handleSave()
+            }}
+          >
+            <Text className={'font-display-medium text-lg text-white'}>
+              Save Preferences
+            </Text>
+          </Pressable>
         </View>
-      </ScrollView>
-      <View className="flex-grow h-32 w-screen">
-        <Pressable
-          className={
-            'bg-primary rounded-lg p-4 mt-2 mx-4 flex flex-row items-center justify-center bg-green-600'
-          }
-          onPress={() => {
-            handleSave()
-          }}
-        >
-          <Text className={'font-display-medium text-lg text-white'}>
-            Save Preferences
-          </Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   )
