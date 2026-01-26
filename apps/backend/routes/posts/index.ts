@@ -1,12 +1,12 @@
 import { log } from 'console'
 
-import { and, eq } from 'drizzle-orm'
+import { and, desc, eq, getTableColumns, sql } from 'drizzle-orm'
 import { z } from 'zod'
 
 import type { Request, Response } from 'express'
 
 import { db } from '@/db/index'
-import { MediaType, posts } from '@/db/schema/user'
+import { MediaType, postComments, postLikes, posts, users } from '@/db/schema/user'
 import { validateSessionToken } from '@/utils/auth/utils'
 
 export const get = async (req: Request, res: Response) => {
@@ -16,43 +16,36 @@ export const get = async (req: Request, res: Response) => {
     const requestToken = req.token
     const session = await validateSessionToken(requestToken || '')
 
-    if (session === null) {
+    if (session === null || session.user === null) {
       return res.status(401).json({
         error: true,
         message: 'Unauthorized'
       })
     }
 
-    const posts = await db.query.posts.findMany({
-      limit: 30,
-      offset: (pageNumber - 1) * 30,
-      where: (posts, { and, eq }) =>
-        and(eq(posts.isApproved, true), eq(posts.isBanned, false)),
-      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-      with: {
-        likes: {
-          columns: {
-            userId: true
-          }
-        },
-        comments: {
-          columns: {
-            id: true
-          }
-        },
+    const postsData = await db
+      .select({
+        ...getTableColumns(posts),
         user: {
-          columns: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            image: true
-          }
-        }
-      }
-    })
+          id: users.id,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          image: users.image
+        },
+        likeCount: sql<number>`(SELECT count(*) FROM ${postLikes} WHERE ${postLikes.postId} = ${posts.id})`.mapWith(Number),
+        commentCount: sql<number>`(SELECT count(*) FROM ${postComments} WHERE ${postComments.postId} = ${posts.id})`.mapWith(Number),
+        isLiked: sql<boolean>`EXISTS(SELECT 1 FROM ${postLikes} WHERE ${postLikes.postId} = ${posts.id} AND ${postLikes.userId} = ${session.user.id})`.mapWith(Boolean)
+      })
+      .from(posts)
+      .leftJoin(users, eq(posts.userId, users.id))
+      .where(and(eq(posts.isApproved, true), eq(posts.isBanned, false)))
+      .orderBy(desc(posts.createdAt))
+      .limit(30)
+      .offset((pageNumber - 1) * 30)
+
     return res.json({
       error: false,
-      data: posts
+      data: postsData
     })
   } catch (e) {
     return res.status(500).json({
@@ -61,32 +54,21 @@ export const get = async (req: Request, res: Response) => {
     })
   }
 }
-const getPosts = db.query.posts.findMany({
-  limit: 30,
-  where: (posts, { and, eq }) =>
-    and(eq(posts.isApproved, true), eq(posts.isBanned, false)),
-  orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-  with: {
-    likes: {
-      columns: {
-        userId: true
-      }
-    },
-    comments: {
-      columns: {
-        id: true
-      }
-    },
+const getPosts = db
+  .select({
+    ...getTableColumns(posts),
     user: {
-      columns: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        image: true
-      }
-    }
-  }
-})
+      id: users.id,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      image: users.image
+    },
+    likeCount: sql<number>`0`.mapWith(Number),
+    commentCount: sql<number>`0`.mapWith(Number),
+    isLiked: sql<boolean>`false`.mapWith(Boolean)
+  })
+  .from(posts)
+  .leftJoin(users, eq(posts.userId, users.id))
 export type GetPosts = Awaited<typeof getPosts>
 export const post = async (req: Request, res: Response) => {
   try {

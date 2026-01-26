@@ -13,24 +13,31 @@ import type { GetPostById, GetPosts } from '@backend/types'
 
 export default function Post(props: {
   post: GetPosts[number] | NonNullable<GetPostById>
-  favoriteUsers: Array<{ userId: string }>
+  favoriteUsers?: Array<{ userId: string }>
   favoriteFunction: (isFavorited: boolean) => void
-  selfAccountID: string
+  selfAccountID?: string
   alone: boolean
 }) {
   const createdDate = DateTime.fromISO(String(props.post.createdAt))
   const [isHidden, setHidden] = useState(false)
-  const [isfavorited, toggleFavorite] = useState(
-    props.favoriteUsers.some((value) => props.selfAccountID == value.userId)
-  )
-  const [favoriteCount, setFavoriteCount] = useState(props.favoriteUsers.length)
+
+  const postAny = props.post as any
+  const likeCount = postAny.likeCount ?? props.favoriteUsers?.length ?? 0
+  const isLiked =
+    postAny.isLiked ??
+    props.favoriteUsers?.some((value) => props.selfAccountID == value.userId) ??
+    false
+  const commentCount = postAny.commentCount ?? postAny.comments?.length ?? 0
+
+  const [isfavorited, toggleFavorite] = useState(isLiked)
+  const [favoriteCount, setFavoriteCount] = useState(likeCount)
   function favorite() {
     if (isfavorited) {
       return 'alreadyFavorite'
     }
     props.favoriteFunction(!isfavorited)
     toggleFavorite(true)
-    setFavoriteCount(props.favoriteUsers.length + 1)
+    setFavoriteCount((prev: number) => prev + 1)
   }
   function postRemove() {
     setHidden(true)
@@ -121,9 +128,9 @@ export default function Post(props: {
             {!props.alone && (
               <View>
                 <View className={'flex flex-row justify-end items-center my-2'}>
-                  {props.post.comments.length !== 0 && (
+                  {commentCount !== 0 && (
                     <Text className={'ml-4 font-display text-sm text-gray-600'}>
-                      {props.post.comments.length} تعليقات
+                      {commentCount} تعليقات
                     </Text>
                   )}
                   <Text className={'font-display text-sm text-gray-600'}>
