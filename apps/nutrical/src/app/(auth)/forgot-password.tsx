@@ -13,11 +13,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 
+import useClient from '~/components/network/client'
 import { m } from '~/paraglide/messages'
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
+  const client = useClient()
 
   const handleResetRequest = async () => {
     if (!email) {
@@ -27,15 +29,38 @@ export default function ForgotPassword() {
       })
     }
     setLoading(true)
-    // TODO: Implement actual password reset API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setLoading(false)
-    Toast.show({
-      type: 'success',
-      text1: m.forgot_password_success_title(),
-      text2: m.forgot_password_success_message()
-    })
-    router.back()
+    try {
+      const result = await client
+        .post<{ error: false; message: string } | { error: true; message: string }>(
+          'auth/forgot-password',
+          {
+            json: { email }
+          }
+        )
+        .json()
+
+      setLoading(false)
+
+      if (result.error) {
+        return Toast.show({
+          type: 'error',
+          text1: result.message
+        })
+      }
+
+      Toast.show({
+        type: 'success',
+        text1: m.forgot_password_success_title(),
+        text2: m.forgot_password_success_message()
+      })
+      router.back()
+    } catch (err) {
+      setLoading(false)
+      Toast.show({
+        type: 'error',
+        text1: m.login_unknown_error()
+      })
+    }
   }
 
   return (
