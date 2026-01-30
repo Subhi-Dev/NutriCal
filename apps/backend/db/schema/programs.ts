@@ -213,7 +213,7 @@ export const food = createTable('food', {
   notes: text('notes'),
   backgroundImageUrl: varchar('background_image_url', { length: 255 }),
   photoUrl: varchar('photo_url', { length: 255 }),
-  barcode: varchar('barcode', { length: 255 }),
+  barcode: varchar('barcode', { length: 255 }).unique(),
   cookingTime: integer('cooking_time'),
   servings: integer('servings'),
   // Component fields
