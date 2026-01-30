@@ -1,7 +1,7 @@
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { ChevronDown, Clock, Flame, Utensils, Users } from 'lucide-react-native'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ScrollView,
   View,
@@ -25,8 +25,8 @@ type GetFoodById = OriginalGetFoodById & {
   baseAmountGrams?: number
 }
 
-import ProgressBar from '~/components/ui/ProgressBar'
 import useClient from '~/components/network/client'
+import ProgressBar from '~/components/ui/ProgressBar'
 
 function Border() {
   return <View className={'my-1 h-0.5 bg-gray-100 rounded-full'}></View>
@@ -103,8 +103,6 @@ export default function FoodDetails() {
   const [amount, setAmount] = useState('1')
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null)
   const [selectedMeal, setSelectedMeal] = useState(initialMeal || 'breakfast')
-  const [calculatedNutrition, setCalculatedNutrition] =
-    useState<Partial<GetFoodById> | null>(null)
 
   const meals = ['breakfast', 'lunch', 'dinner', 'snack']
   const { data: foodData, isLoading } = useSWR<
@@ -129,16 +127,14 @@ export default function FoodDetails() {
     }
   }, [foodData])
 
-  useEffect(() => {
+  const calculatedNutrition = useMemo(() => {
     if (!food || !selectedUnit) {
-      setCalculatedNutrition(null)
-      return
+      return null
     }
 
     const numericAmount = parseFloat(amount)
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      setCalculatedNutrition(food) // Show base nutrition if amount is invalid
-      return
+      return food // Show base nutrition if amount is invalid
     }
 
     const totalGrams = numericAmount * selectedUnit.gramsEquivalent
@@ -169,7 +165,7 @@ export default function FoodDetails() {
     }
 
     // Merge calculated nutrition with the original food object
-    setCalculatedNutrition({ ...food, ...newNutrition })
+    return { ...food, ...newNutrition }
   }, [amount, selectedUnit, food])
 
   if (isLoading) {
@@ -519,14 +515,6 @@ export default function FoodDetails() {
                 amount: Number(amount),
                 unitId: selectedUnit?.id
               }
-            })
-            console.log({
-              foodId: food.id,
-              amount: Number(amount),
-              unit: selectedUnit?.id === 'grams' ? null : selectedUnit?.name,
-              meal: selectedMeal,
-              programId,
-              selectedDay
             })
             mutate()
             router.back()
