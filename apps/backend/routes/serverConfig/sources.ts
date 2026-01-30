@@ -1,4 +1,4 @@
-import { eq, or } from 'drizzle-orm'
+import { inArray } from 'drizzle-orm'
 import { z } from 'zod'
 
 import type { Request, Response } from 'express'
@@ -52,7 +52,7 @@ export const put = async (req: Request, res: Response) => {
       const updatedServerConfig = await db
         .update(sources)
         .set({ enabled: true })
-        .where(or(...partialData.ids.map((value) => eq(sources.id, value))))
+        .where(inArray(sources.id, partialData.ids))
         .returning()
       return res.json({ error: false, data: updatedServerConfig })
     }
